@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ar" dir="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>امتحان الشهادة الاعدادية</title>
+    <style>
+        /* إعادة تعيين وتنسيقات عامة */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* الحاوية الرئيسية */
+        .countdown-container {
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+        }
+
+        /* العنوان الرئيسي */
+        h1 {
+            color: #ffffff;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        /* الحاوية المرنة للعناصر الأربعة */
+        .timer-blocks {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* كل وحدة زمنية */
+        .time-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 100px;
+        }
+
+        /* تسمية الوحدة (أيام، ساعات...) */
+        .label {
+            color: #a0a0b0;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* المربع الذي يحتوي الرقم */
+        .box {
+            background-color: #1e2a3a;
+            width: 90px;
+            height: 90px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), inset 0 0 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .box:hover {
+            transform: translateY(-5px);
+        }
+
+        /* الرقم داخل المربع */
+        .number {
+            color: #ffffff;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+        }
+
+        /* الفواصل بين الوحدات (النقطتين) */
+        .separator {
+            color: #4a5568;
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin: 0 5px;
+            align-self: flex-start;
+            margin-top: 30px;
+            display: none; /* نخفيها لتطابق التصميم المطلوب بدون فواصل */
+        }
+
+        /* تصميم متجاوب للشاشات الصغيرة */
+        @media (max-width: 600px) {
+            .countdown-container {
+                padding: 25px 15px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+                margin-bottom: 25px;
+            }
+
+            .timer-blocks {
+                gap: 10px;
+            }
+
+            .time-unit {
+                min-width: 70px;
+            }
+
+            .box {
+                width: 65px;
+                height: 65px;
+                border-radius: 12px;
+            }
+
+            .number {
+                font-size: 1.8rem;
+            }
+
+            .label {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .timer-blocks {
+                gap: 5px;
+            }
+            
+            .time-unit {
+                min-width: 60px;
+            }
+            
+            .box {
+                width: 55px;
+                height: 55px;
+            }
+            
+            .number {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="countdown-container">
+        <h1>امتحان الشهادة الاعدادية</h1>
+        
+        <div class="timer-blocks">
+            <!-- الأيام -->
+            <div class="time-unit">
+                <div class="label">ايام</div>
+                <div class="box">
+                    <span class="number" id="days">00</span>
+                </div>
+            </div>
+
+            <!-- الساعات -->
+            <div class="time-unit">
+                <div class="label">ساعات</div>
+                <div class="box">
+                    <span class="number" id="hours">00</span>
+                </div>
+            </div>
+
+            <!-- الدقائق -->
+            <div class="time-unit">
+                <div class="label">دقائق</div>
+                <div class="box">
+                    <span class="number" id="minutes">00</span>
+                </div>
+            </div>
+
+            <!-- الثواني -->
+            <div class="time-unit">
+                <div class="label">ثواني</div>
+                <div class="box">
+                    <span class="number" id="seconds">00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // تحديد التاريخ المستهدف: 4 يونيو 2026 الساعة 9:00 صباحًا
+        // ملاحظة: الشهور في JavaScript تبدأ من 0 (يناير=0)، لذا يونيو=5
+        const targetDate = new Date(2026, 5, 4, 9, 0, 0).getTime();
+        
+        // عناصر HTML لعرض الأرقام
+        const daysElement = document.getElementById('days');
+        const hoursElement = document.getElementById('hours');
+        const minutesElement = document.getElementById('minutes');
+        const secondsElement = document.getElementById('seconds');
+
+        // دالة تحديث المؤقت
+        function updateCountdown() {
+            // الحصول على الوقت الحالي
+            const now = new Date().getTime();
+            
+            // حساب الفرق بالمللي ثانية
+            const difference = targetDate - now;
+            
+            // إذا انتهى الوقت
+            if (difference < 0) {
+                daysElement.textContent = '00';
+                hoursElement.textContent = '00';
+                minutesElement.textContent = '00';
+                secondsElement.textContent = '00';
+                
+                // يمكن إظهار رسالة إضافية هنا
+                document.querySelector('h1').textContent = 'انتهى الوقت!';
+                return;
+            }
+            
+            // حساب الوحدات الزمنية
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+            
+            // تنسيق الأرقام لتظهر برقمين دائماً (مثلاً: 05 بدلاً من 5)
+            daysElement.textContent = days < 10 ? '0' + days : days;
+            hoursElement.textContent = hours < 10 ? '0' + hours : hours;
+            minutesElement.textContent = minutes < 10 ? '0' + minutes : minutes;
+            secondsElement.textContent = seconds < 10 ? '0' + seconds : seconds;
+        }
+        
+        // تشغيل التحديث الأول فوراً
+        updateCountdown();
+        
+        // تحديث المؤقت كل ثانية
+        setInterval(updateCountdown, 1000);
+        
+        // تأثير إضافي: وميض خفيف عند تغيير الثواني (اختياري)
+        const observer = new MutationObserver(() => {
+            const secondsBox = secondsElement.parentElement;
+            secondsBox.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                secondsBox.style.transform = 'scale(1)';
+            }, 100);
+        });
+        
+        observer.observe(secondsElement, { characterData: true, subtree: true });
+    </script>
+</body>
+</html>
